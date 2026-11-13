@@ -112,5 +112,23 @@ namespace Casher {
         }
         return false;
     }
+    bool KeyValStore::evictOldest() {
+        if (tailLRU != nullptr) {
+            del(tailLRU->key);
+            return true;
+        }
+        return false;
+    }
+    std::string KeyValStore::loopSearch(const std::string &key) {
+        std::string res = "";
+        int loc = hashFunction(key);
+        auto cur = hashTable[loc];
+        while (cur != nullptr) {
+            res += cur->value + " -> ";
+            cur = cur->next;
+        }
+        res += "nullptr";
+        return res;
+    }
 }
 

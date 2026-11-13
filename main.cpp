@@ -12,6 +12,7 @@ int main() {
     cout<<"======================================"<<endl;
     cout<<"COMMANDS:"<<endl;
     cout<<"SET <key> <value> | GET <key> | DEL <key> | EXIT"<<endl;
+    cout<<"Extra Commands: \n LOOPSEARCH <key> | returns the entire bucket of a provided key \n DELOLDEST | deletes the oldest LRU entry, which is tailLRU."<<endl;
 
     string lineinput;
 
@@ -77,6 +78,24 @@ int main() {
                 else {
                     std::cout << "ERROR: Key cannot be deleted, does not exist"<<endl;
                 }
+            }
+        }
+        else if (command == "deloldest") {
+            bool success = db.evictOldest();
+            if (success) {
+                std::cout << "Successfully deleted oldest entry\n";
+            }
+            else {
+                std::cout << "ERROR: tail does not exist/no entries in the database"<<endl;
+            }
+        }
+        else if (command == "loopsearch") {
+            string key;
+            commandStream >> key;
+            if (key.empty()) {
+                cout<<"ERROR: The key cannot be empty."<<endl;
+            } else {
+                cout <<"The bucket in question starting from the provided key is: "<<db.loopSearch(key)<<"\n";
             }
         }
         else {

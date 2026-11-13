@@ -33,13 +33,14 @@ namespace Casher {
         int hashFunction(const std::string& key);
         void detachFromLRU(std::shared_ptr<Node> node);
         void moveToLRUHead(std::shared_ptr<Node> node);
-        void evictOldest();
     public:
         KeyValStore(int capacity);
 
         bool set(const std::string& key, const std::string& value);
         std::string get(const std::string& key);
+        std::string loopSearch(const std::string& key);
         bool del(const std::string& key);
+        bool evictOldest();
 
         void printDebug() const;
         size_t getMemUsage() const { return AllocByes; };
