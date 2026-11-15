@@ -43,6 +43,8 @@ namespace Casher {
         bool evictOldest();
 
         void printDebug() const;
+        void saveToFile(const char* filename);
+        void loadFromFile(const char* filename);
         size_t getMemUsage() const { return AllocByes; };
     };
 }

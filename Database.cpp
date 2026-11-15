@@ -3,6 +3,7 @@
 //
 
 #include "Database.h"
+#include <fstream>
 
 namespace Casher {
     KeyValStore::KeyValStore(int capacity) {
@@ -129,6 +130,33 @@ namespace Casher {
         }
         res += "nullptr";
         return res;
+    }
+
+    void KeyValStore::saveToFile(const char *filename) {
+        std::ofstream out(filename);
+        if (!out) return;
+
+        auto current = tailLRU;
+        while (current != nullptr) {
+            out<<current->key<<"\t"<<current->value<<"\n"<<std::endl;
+            current = current->prevLRU.lock();
+        }
+    }
+
+    void KeyValStore::loadFromFile(const char *filename) {
+        std::ifstream in(filename);
+        if (!in) return;
+
+        std::string line;
+        while (std::getline(in, line)) {
+            size_t tabPos = line.find("\t");
+            if (tabPos != std::string::npos) {
+                std::string key = line.substr(0, tabPos);
+                std::string value = line.substr(tabPos+1);
+
+                set(key, value);
+            }
+        }
     }
 }
 

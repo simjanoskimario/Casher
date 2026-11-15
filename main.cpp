@@ -11,8 +11,8 @@ int main() {
     cout<<"==========CASHER V1 TERMINAL=========="<<endl;
     cout<<"======================================"<<endl;
     cout<<"COMMANDS:"<<endl;
-    cout<<"SET <key> <value> | GET <key> | DEL <key> | EXIT"<<endl;
-    cout<<"Extra Commands: \n LOOPSEARCH <key> | returns the entire bucket of a provided key \n DELOLDEST | deletes the oldest LRU entry, which is tailLRU."<<endl;
+    cout<<"SET <key> <value> | GET <key> | DEL <key> | EXIT | SAVE <filename> | LOAD <filename> | (no extensions when providing filename argument, if file doesn't exist it is automatically made)"<<endl;
+    cout<<"Extra Commands: \n LOOPSEARCH <key> | returns the entire bucket of the provided key \n DELOLDEST | deletes the oldest LRU entry, which is tailLRU"<<endl;
 
     string lineinput;
 
@@ -96,6 +96,28 @@ int main() {
                 cout<<"ERROR: The key cannot be empty."<<endl;
             } else {
                 cout <<"The bucket in question starting from the provided key is: "<<db.loopSearch(key)<<"\n";
+            }
+        }
+        else if (command == "save") {
+            std::string name;
+            commandStream >> name;
+            if (name.empty()) {
+                cout<<"ERROR: The name cannot be empty."<<endl;
+            } else {
+                name += ".txt";
+                db.saveToFile(name.c_str());
+                cout<<"Saved all available data to "<<name<<endl;
+            }
+        }
+        else if (command == "load") {
+            std::string name;
+            commandStream >> name;
+            if (name.empty()) {
+                cout<<"ERROR: The name cannot be empty."<<endl;
+            } else {
+                name += ".txt";
+                db.loadFromFile(name.c_str());
+                cout<<"Loaded "<<name<<endl;
             }
         }
         else {
