@@ -1,0 +1,37 @@
+name: Build Windows Qt App
+
+on:
+  workflow_dispatch: # Lets you click a "Run workflow" button manually on GitHub
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.2' # Match your Qt major version (e.g., 6.x.x)
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_mingw'
+
+      - name: Configure and Build with CMake
+        run: |
+          cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+
+      - name: Package .exe and Qt DLLs
+        run: |
+          mkdir release_package
+          copy build\YourAppName.exe release_package\
+          windeployqt.exe release_package\YourAppName.exe
+
+      - name: Upload Windows Zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: YourAppName-Windows
+          path: release_package/
