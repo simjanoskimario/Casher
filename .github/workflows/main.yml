@@ -1,7 +1,7 @@
 name: Build Windows Qt App
 
 on:
-  workflow_dispatch: # Lets you click a "Run workflow" button manually on GitHub
+  workflow_dispatch:
 
 jobs:
   build-windows:
@@ -11,13 +11,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Qt
+      - name: Install Qt and Matching MinGW
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.7.2' # Match your Qt major version (e.g., 6.x.x)
+          version: '6.8.3'
           host: 'windows'
           target: 'desktop'
           arch: 'win64_mingw'
+          tools: 'tools_mingw'
 
       - name: Configure and Build with CMake
         run: |
@@ -27,11 +28,11 @@ jobs:
       - name: Package .exe and Qt DLLs
         run: |
           mkdir release_package
-          copy build\YourAppName.exe release_package\
-          windeployqt.exe release_package\YourAppName.exe
+          copy build\Casher.exe release_package\
+          windeployqt.exe release_package\Casher.exe
 
       - name: Upload Windows Zip
         uses: actions/upload-artifact@v4
         with:
-          name: YourAppName-Windows
+          name: Casher-Windows
           path: release_package/
